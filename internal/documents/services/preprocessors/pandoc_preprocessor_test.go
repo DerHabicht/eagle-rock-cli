@@ -1,4 +1,4 @@
-package services
+package preprocessors
 
 import (
 	"github.com/stretchr/testify/assert"

@@ -1,4 +1,4 @@
-package services
+package macro_processors
 
 type NullMacroProcessor struct {}
 

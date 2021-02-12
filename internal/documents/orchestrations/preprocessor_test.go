@@ -1,7 +1,7 @@
 package orchestrations
 
 import (
-	"github.com/derhabicht/eagle-rock-cli/internal/documents/services"
+	"github.com/derhabicht/eagle-rock-cli/internal/documents/services/preprocessors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -17,6 +17,11 @@ func (m *MockHeaderParser) Preprocess(text string) (string, error) {
 }
 
 func TestPandocPreprocessor_IsPreprocessor(t *testing.T) {
-	var _ Preprocessor = (*services.PandocPreprocessor)(nil)
+	var _ Preprocessor = (*preprocessors.PandocPreprocessor)(nil)
+	assert.True(t, true)
+}
+
+func TestNullPreprocessor_IsPreprocessor(t *testing.T) {
+	var _ Preprocessor = (*preprocessors.NullPreprocessor)(nil)
 	assert.True(t, true)
 }

@@ -1,5 +1,5 @@
 package orchestrations
 
 type Builder interface {
-	BuildDocument(controlNumber string, content []byte) error
+	BuildDocument(year string, controlNumber string, content []byte) error
 }

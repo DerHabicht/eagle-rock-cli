@@ -1,4 +1,4 @@
-package services
+package templates
 
 import (
 	"bytes"
@@ -21,20 +21,21 @@ func NewLatexTemplate(template []byte) LatexTemplate {
 
 // TODO: Handle the status table for Standards-Track MRs
 func (lt LatexTemplate) Inject(header models.Header, text []byte) ([]byte, error) {
-	h, err := processHeaderFields(header)
-	if err != nil {
-		return nil, errors.WithMessage(err, "failed to prepare header information for template")
+	templ := bytes.ReplaceAll(lt.template, []byte("%TEXT%"), text)
+
+	if header != nil {
+		h, err := processHeaderFields(header)
+		if err != nil {
+			return nil, errors.WithMessage(err, "failed to prepare header information for template")
+		}
+
+		// TODO: Find a more elegant way to handle the formatting of the Control Number.
+		h["%CONTROL_NUMBER%"] = bytes.ReplaceAll(h["%CONTROL_NUMBER%"], []byte("-"), []byte("--"))
+
+		for k, v := range h {
+			templ = bytes.ReplaceAll(templ, []byte(k), v)
+		}
 	}
-
-	// TODO: Find a more elegant way to handle this.
-	h["%CONTROL_NUMBER%"] = bytes.ReplaceAll(h["%CONTROL_NUMBER%"], []byte("-"), []byte("--"))
-
-	templ := lt.template
-	for k, v := range h {
-		templ = bytes.ReplaceAll(templ, []byte(k), v)
-	}
-
-	templ = bytes.ReplaceAll(templ, []byte("%TEXT%"), text)
 
 	return templ, nil
 }

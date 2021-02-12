@@ -1,7 +1,7 @@
 package orchestrations
 
 import (
-	"github.com/derhabicht/eagle-rock-cli/internal/documents/services"
+	"github.com/derhabicht/eagle-rock-cli/internal/documents/services/content_readers"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -17,6 +17,6 @@ func (m *MockContentReader) Read(controlNumber string) ([]byte, error) {
 }
 
 func TestFileContentReader_IsContentReader(t *testing.T) {
-	var _ ContentReader = (*services.FileContentReader)(nil)
+	var _ ContentReader = (*content_readers.FileContentReader)(nil)
 	assert.True(t, true)
 }

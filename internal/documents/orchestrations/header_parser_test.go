@@ -2,7 +2,7 @@ package orchestrations
 
 import (
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/models"
-	"github.com/derhabicht/eagle-rock-cli/internal/documents/services"
+	"github.com/derhabicht/eagle-rock-cli/internal/documents/services/header_parsers"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -17,6 +17,11 @@ func (m *MockHeaderParser) ParseHeader(raw []byte) (models.Header, string, error
 }
 
 func TestMemoForRecordHeaderParser_IsHeaderParser(t *testing.T) {
-	var _ HeaderParser = (*services.MemoForRecordHeaderParser)(nil)
+	var _ HeaderParser = (*header_parsers.MemoForRecordHeaderParser)(nil)
+	assert.True(t, true)
+}
+
+func TestNullHeaderParser_IsHeaderParser(t *testing.T) {
+	var _ HeaderParser = (*header_parsers.NullHeaderParser)(nil)
 	assert.True(t, true)
 }

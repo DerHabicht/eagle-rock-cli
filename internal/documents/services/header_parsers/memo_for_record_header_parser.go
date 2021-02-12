@@ -1,4 +1,4 @@
-package services
+package header_parsers
 
 import (
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/models"

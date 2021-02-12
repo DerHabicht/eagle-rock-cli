@@ -1,4 +1,4 @@
-package services
+package macro_processors
 
 import (
 	"github.com/stretchr/testify/assert"

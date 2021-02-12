@@ -1,4 +1,4 @@
-package services
+package templates
 
 import (
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/models"

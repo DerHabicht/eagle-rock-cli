@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Building Memoranda for Record
+- Printing an index of unpublished MRs
+- Building WARNOs for printing
 
 ### Changed
 

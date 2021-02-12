@@ -1,7 +1,7 @@
 package orchestrations
 
 import (
-	"github.com/derhabicht/eagle-rock-cli/internal/documents/services"
+	"github.com/derhabicht/eagle-rock-cli/internal/documents/services/macro_processors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -17,6 +17,6 @@ func (m *MockMacroProcessor) ProcessMacros(text string) (string, error) {
 }
 
 func TestNullMacroProcessor_IsMacroProcessor(t *testing.T) {
-	var _ MacroProcessor = (*services.NullMacroProcessor)(nil)
+	var _ MacroProcessor = (*macro_processors.NullMacroProcessor)(nil)
 	assert.True(t, true)
 }
