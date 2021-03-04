@@ -15,70 +15,35 @@ type MrStatusHistory struct {
 }
 
 type MrHeader struct {
-	Logo          string                  `json:"logo" yaml:"logo"`
-	Address       string                  `json:"address" yaml:"address"`
-	Tlp           documents.Tlp           `json:"tlp" yaml:"tlp"`
-	ControlNumber documents.ControlNumber `json:"control_number" yaml:"control_number"`
-	Date          documents.Date          `json:"date" yaml:"date"`
+	MemoHeader
 	Track         MrTrack                 `json:"track" yaml:"track"`
 	Subject       string                  `json:"subject" yaml:"subject"`
-	Attachments   []string                `json:"attachments" yaml:"attachments"`
-	Cc            []string                `json:"cc" yaml:"cc"`
 	StatusHistory MrStatusHistory         `json:"status_history" yaml:"status_history"`
 }
 
 func (mh MrHeader) HeaderFieldMap() map[string]interface{} {
+	fields := mh.MemoHeader.HeaderFieldMap()
+	fields["TRACK"] = mh.Track.String()
+	fields["SUBJECT"] = mh.Subject
+
 	if mh.Track == STANDARDS {
-		return map[string]interface{}{
-			"LOGO":           mh.Logo,
-			"ADDRESS":        mh.Address,
-			"TLP":            mh.Tlp.String(),
-			"CONTROL_NUMBER": mh.ControlNumber.String(),
-			"DATE":           mh.Date.String(),
-			"TRACK":          mh.Track.String(),
-			"SUBJECT":        mh.Subject,
-			"ATTACHMENTS":    mh.Attachments,
-			"CC":             mh.Cc,
-			"ADOPTED":        mh.StatusHistory.Adopted,
-			"REJECTED":	      mh.StatusHistory.Rejected,
-		}
-	} else {
-		return map[string]interface{}{
-			"LOGO":           mh.Logo,
-			"ADDRESS":        mh.Address,
-			"TLP":            mh.Tlp.String(),
-			"CONTROL_NUMBER": mh.ControlNumber.String(),
-			"DATE":           mh.Date.String(),
-			"TRACK":          mh.Track.String(),
-			"SUBJECT":        mh.Subject,
-			"ATTACHMENTS":    mh.Attachments,
-			"CC":             mh.Cc,
-		}
+		fields["ADOPTED"] = mh.StatusHistory.Adopted
+		fields["REJECTED"] = mh.StatusHistory.Rejected
 	}
-}
 
-type MrSignature struct {
-	Name string `json:"name" yaml:"name"`
-	Signature string `json:"signature" yaml:"signature"`
-}
-
-func (ms MrSignature) SignatureFieldMap() map[string]interface{} {
-	return map[string]interface{}{
-		"NAME": ms.Name,
-		"SIGNATURE": ms.Signature,
-	}
+	return fields
 }
 
 type Mr struct {
-	header MrHeader
-	body []byte
-	signature MrSignature
+	header    MrHeader
+	body      string
+	signature MemoSignature
 }
 
-func NewMr(header MrHeader, body []byte, signature MrSignature) Mr {
+func NewMr(header MrHeader, body string, signature MemoSignature) Mr {
 	return Mr{
-		header: header,
-		body: body,
+		header:    header,
+		body:      body,
 		signature: signature,
 	}
 }
@@ -87,7 +52,7 @@ func (m Mr) Header() IHeader {
 	return m.header
 }
 
-func (m Mr) Body() []byte {
+func (m Mr) Body() string {
 	return m.body
 }
 

@@ -57,6 +57,122 @@ func TestDate_UnmarshalYAML_Null(t *testing.T) {
 	assert.Nil(t, result.TestDtg)
 }
 
+func TestParseDtg_WillParseLong(t *testing.T) {
+	input := "2012-09-27T16:14Z"
+
+	dtg, err := time.Parse("2006-01-02T15:04Z", input)
+	if err != nil {
+		assert.FailNow(t, "%s", err)
+	}
+	expected := Dtg{dtg}
+
+	result, err := ParseDtg(input)
+
+	assert.NoError(t, err)
+	assert.Equal(t, expected, result)
+}
+
+func TestParseDtg_WillParseShort(t *testing.T) {
+	input := "20120927T1614Z"
+
+	dtg, err := time.Parse("20060102T1504Z", input)
+	if err != nil {
+		assert.FailNow(t, "%s", err)
+	}
+	expected := Dtg{dtg}
+
+	result, err := ParseDtg(input)
+
+	assert.NoError(t, err)
+	assert.Equal(t, expected, result)
+}
+
+func TestParseDtg_WillParseExplicitTimeZoneLong(t *testing.T) {
+	input := "2012-09-27T16:14-07:00"
+
+	dtg, err := time.Parse("2006-01-02T15:04-07:00", input)
+	if err != nil {
+		assert.FailNow(t, "%s", err)
+	}
+	expected := Dtg{dtg}
+
+	result, err := ParseDtg(input)
+
+	assert.NoError(t, err)
+	assert.Equal(t, expected, result)
+}
+
+func TestParseDtg_WillParseExplicitTimeZoneShort(t *testing.T) {
+	input := "20120927T1614-0700"
+
+	dtg, err := time.Parse("20060102T1504-0700", input)
+	if err != nil {
+		assert.FailNow(t, "%s", err)
+	}
+	expected := Dtg{dtg}
+
+	result, err := ParseDtg(input)
+
+	assert.NoError(t, err)
+	assert.Equal(t, expected, result)
+}
+
+func TestDtg_FormatLong_WillFormatZForUTC(t *testing.T) {
+	inputTime, err := time.Parse("2006-01-02T15:04-07:00", "2012-09-27T16:14+00:00")
+	if err != nil {
+		assert.FailNow(t, "%s", err)
+	}
+	input := Dtg{inputTime}
+
+	expected := "2012-09-27T16:14Z"
+
+	result := input.FormatLong()
+
+	assert.Equal(t, expected, result)
+}
+
+func TestDtg_FormatLong_WillFormatExplicitTimeZone(t *testing.T) {
+	inputTime, err := time.Parse("2006-01-02T15:04-07:00", "2012-09-27T16:14-07:00")
+	if err != nil {
+		assert.FailNow(t, "%s", err)
+	}
+	input := Dtg{inputTime}
+
+	expected := "2012-09-27T16:14-07:00"
+
+	result := input.FormatLong()
+
+	assert.Equal(t, expected, result)
+}
+
+func TestDtg_FormatShort_WillFormatZForUTC(t *testing.T) {
+	inputTime, err := time.Parse("2006-01-02T15:04-07:00", "2012-09-27T16:14+00:00")
+	if err != nil {
+		assert.FailNow(t, "%s", err)
+	}
+	input := Dtg{inputTime}
+
+	expected := "20120927T1614Z"
+
+	result := input.FormatShort()
+
+	assert.Equal(t, expected, result)
+}
+
+func TestDtg_FormatShort_WillFormatExplicitTimeZone(t *testing.T) {
+	inputTime, err := time.Parse("2006-01-02T15:04-07:00", "2012-09-27T16:14-07:00")
+	if err != nil {
+		assert.FailNow(t, "%s", err)
+	}
+	input := Dtg{inputTime}
+
+	expected := "20120927T1614-0700"
+
+	result := input.FormatShort()
+
+	assert.Equal(t, expected, result)
+}
+
 func TestDtg_MarshalYAML(t *testing.T) {
 	// TODO: Figure out how to marshal a date without the enclosing quotes
 	testTime, err := time.Parse("2006-01-02T15:04", "1988-09-27T16:42")
