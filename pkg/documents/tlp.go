@@ -76,3 +76,23 @@ func (t Tlp) String() string {
 		return t.level.String()
 	}
 }
+
+func (t Tlp) MarshalYAML() (interface{}, error) {
+	return t.String(), nil
+}
+
+func (t *Tlp) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var buf string
+	err := unmarshal(&buf)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	temp, err := ParseTlp(buf)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	*t = temp
+	return nil
+}

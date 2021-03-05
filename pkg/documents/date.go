@@ -31,12 +31,12 @@ func (d *Date) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		return errors.WithStack(err)
 	}
 
-	t, err := ParseDate(buf)
+	temp, err := ParseDate(buf)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
-	*d = t
+	*d = temp
 	return nil
 }
 
@@ -117,11 +117,11 @@ func (d *Dtg) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		return errors.WithStack(err)
 	}
 
-	t, err := ParseDtg(buf)
+	temp, err := ParseDtg(buf)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
-	*d = t
+	*d = temp
 	return nil
 }

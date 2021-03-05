@@ -14,4 +14,3 @@ func TestMemoSignature_IsISignature(t *testing.T) {
 	var _ ISignature = (*MemoSignature)(nil)
 	assert.True(t, true)
 }
-

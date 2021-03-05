@@ -25,20 +25,20 @@ func TestOpordHeader_HeaderFieldMap_HasAllFields(t *testing.T) {
 
 	input := OpordHeader{
 		MemoHeader: MemoHeader{
-			Logo: "logo",
+			Logo:    "logo",
 			Address: "address",
-			Tlp: inputTlp,
+			Tlp:     inputTlp,
 			ControlNumber: documents.ControlNumber{
-				Class: documents.MR,
-				Year: 2021,
+				Class:        documents.MR,
+				Year:         2021,
 				MainSequence: 1,
 			},
-			Date: &inputDate,
+			Date:        &inputDate,
 			Attachments: nil,
-			Cc: nil,
+			Cc:          nil,
 		},
-		MissionNumber: "mission_number",
-		TimeZone: "UTC+0000",
+		MissionNumber:     "mission_number",
+		TimeZone:          "UTC+0000",
 		IncidentCommander: "IncidentCommander",
 	}
 

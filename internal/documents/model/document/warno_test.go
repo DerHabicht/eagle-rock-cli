@@ -36,16 +36,16 @@ TZ UTC-0700 IC ROBERT HAWK`
 		assert.FailNow(t, "%s", err)
 	}
 	expected := WarnoHeader{
-		Tlp: expectedTlp,
+		Tlp:      expectedTlp,
 		DateTime: expectedDtg,
-		Issuer: "THUS//HQ",
+		Issuer:   "THUS//HQ",
 		ControlNumber: documents.ControlNumber{
-			Class: documents.WARNO,
-			Year: 2021,
+			Class:        documents.WARNO,
+			Year:         2021,
 			MainSequence: 1,
 		},
-		MissionNumber: "ACES-20-006-S01",
-		TimeZone: "UTC-0700",
+		MissionNumber:     "ACES-20-006-S01",
+		TimeZone:          "UTC-0700",
 		IncidentCommander: "ROBERT HAWK",
 	}
 
@@ -69,12 +69,12 @@ func TestWarnoHeader_String(t *testing.T) {
 		DateTime: inputDtg,
 		Issuer:   "THUS//HQ",
 		ControlNumber: documents.ControlNumber{
-			Class: documents.WARNO,
-			Year: 2021,
+			Class:        documents.WARNO,
+			Year:         2021,
 			MainSequence: 1,
 		},
-		MissionNumber: "ACES-20-006-S01",
-		TimeZone: "UTC-0700",
+		MissionNumber:     "ACES-20-006-S01",
+		TimeZone:          "UTC-0700",
 		IncidentCommander: "ROBERT HAWK",
 	}
 

@@ -43,3 +43,23 @@ func (mt MrTrack) String() string {
 		panic(errors.Errorf("%d is not a valid MR track", mt))
 	}
 }
+
+func (mt MrTrack) MarshalYAML() (interface{}, error) {
+	return mt.String(), nil
+}
+
+func (mt *MrTrack) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var buf string
+	err := unmarshal(&buf)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	temp, err := ParseMrTrack(buf)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	*mt = temp
+	return nil
+}

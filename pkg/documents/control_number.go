@@ -91,3 +91,23 @@ func (cn ControlNumber) PrettyPrint() string {
 		)
 	}
 }
+
+func (cn ControlNumber) MarshalYAML() (interface{}, error) {
+	return cn.String(), nil
+}
+
+func (cn *ControlNumber) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var buf string
+	err := unmarshal(&buf)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	t, err := ParseControlNumber(buf)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	*cn = t
+	return nil
+}

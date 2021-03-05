@@ -22,8 +22,8 @@ type MemoHeader struct {
 	Tlp           documents.Tlp           `json:"tlp" yaml:"tlp"`
 	ControlNumber documents.ControlNumber `json:"control_number" yaml:"control_number"`
 	Date          *documents.Date         `json:"date" yaml:"date"`
-	Attachments   []string                `json:"attachments" yaml:"attachments"`
-	Cc            []string                `json:"cc" yaml:"cc"`
+	Attachments   []string                `json:"attachments,omitempty" yaml:"attachments,omitempty"`
+	Cc            []string                `json:"cc,omitempty" yaml:"cc,omitempty"`
 }
 
 func (mh MemoHeader) HeaderFieldMap() map[string]interface{} {
@@ -49,4 +49,3 @@ func (ms MemoSignature) SignatureFieldMap() map[string]interface{} {
 		"SIGNATURE": ms.Signature,
 	}
 }
-

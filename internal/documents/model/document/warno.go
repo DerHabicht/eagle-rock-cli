@@ -9,12 +9,12 @@ import (
 )
 
 type WarnoHeader struct {
-	Tlp documents.Tlp
-	DateTime documents.Dtg
-	Issuer string
-	ControlNumber documents.ControlNumber
-	MissionNumber string
-	TimeZone string
+	Tlp               documents.Tlp
+	DateTime          documents.Dtg
+	Issuer            string
+	ControlNumber     documents.ControlNumber
+	MissionNumber     string
+	TimeZone          string
 	IncidentCommander string
 }
 
@@ -37,15 +37,15 @@ func ParseWarnoHeader(s string) (WarnoHeader, error) {
 	}
 
 	return WarnoHeader{
-		Tlp: tlp,
-		DateTime: dtg,
-		Issuer: m[3],
-		ControlNumber: controlNumber,
-		MissionNumber: m[5],
-		TimeZone: m[6],
-		IncidentCommander: m[7],
-	},
-	nil
+			Tlp:               tlp,
+			DateTime:          dtg,
+			Issuer:            m[3],
+			ControlNumber:     controlNumber,
+			MissionNumber:     m[5],
+			TimeZone:          m[6],
+			IncidentCommander: m[7],
+		},
+		nil
 }
 
 func (wh WarnoHeader) String() string {
@@ -80,15 +80,15 @@ func (ws WarnoSignature) SignatureFieldMap() map[string]interface{} {
 }
 
 type Warno struct {
-	header WarnoHeader
-	body string
+	header    WarnoHeader
+	body      string
 	signature WarnoSignature
 }
 
 func NewWarno(header WarnoHeader, body string, signature WarnoSignature) Warno {
-	return Warno {
-		header: header,
-		body: body,
+	return Warno{
+		header:    header,
+		body:      body,
 		signature: signature,
 	}
 }

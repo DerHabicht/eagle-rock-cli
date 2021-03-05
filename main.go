@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/derhabicht/eagle-rock-cli/cmd"
+	"github.com/derhabicht/eagle-rock-cli/internal/documents/repository/filesystem"
 	"github.com/mitchellh/go-homedir"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
@@ -12,25 +14,22 @@ import (
 )
 
 func setDefaultConfig(home string) {
-	viper.SetDefault("directory", fmt.Sprintf("%s/Documents/Org/Policy", home))
-	viper.SetDefault("index", fmt.Sprintf("%s/Documents/Org/Policy/content/doc-index.yml", home))
-	viper.SetDefault("content", map[string]string{
-		"mr_dir":    fmt.Sprintf("%s/Documents/Org/Policy/content/mr", home),
-		"warno_dir": fmt.Sprintf("%s/Documents/Org/Policy/content/warno", home),
-		"opord_dir": fmt.Sprintf("%s/Documents/Org/Policy/content/opord", home),
-		"frago_dir": fmt.Sprintf("%s/Documents/Org/Policy/content/frago", home),
+	root := fmt.Sprintf("%s/Documents/Org/Policy", home)
+	viper.SetDefault("repo_type", "filesystem")
+	viper.SetDefault("src", map[string]string{
+		"MR":    fmt.Sprintf("%s/src/memos/mr", root),
+		"WARNO": fmt.Sprintf("%s/src/orders/warno", root),
+		"OPORD": fmt.Sprintf("%s/src/orders/opord", root),
+		"FRAGO": fmt.Sprintf("%s/src/orders/frago", root),
 	})
-	viper.SetDefault("published", map[string]string{
-		"mr_dir":    fmt.Sprintf("%s/Documents/Org/Policy/mr", home),
-		"warno_dir": fmt.Sprintf("%s/Documents/Org/Policy/warno", home),
-		"opord_dir": fmt.Sprintf("%s/Documents/Org/Policy/opord", home),
-		"frago_dir": fmt.Sprintf("%s/Documents/Org/Policy/frago", home),
+	viper.SetDefault("templates", map[string]string{
+		"LATEX": fmt.Sprintf("%s/templates/latex", root),
 	})
-	viper.SetDefault("latex_templates", map[string]string{
-		"mr":    fmt.Sprintf("%s/Documents/Org/Policy/templates/latex/mr.template", home),
-		"warno": fmt.Sprintf("%s/Documents/Org/Policy/templates/latex/warno.template", home),
-		"opord": fmt.Sprintf("%s/Documents/Org/Policy/templates/latex/opord.template", home),
-		"frago": fmt.Sprintf("%s/Documents/Org/Policy/templates/latex/frago.template", home),
+	viper.SetDefault("pdf", map[string]string{
+		"MR":    fmt.Sprintf("%s/pdf/memos/mr", root),
+		"WARNO": fmt.Sprintf("%s/pdf/orders/warno", root),
+		"OPORD": fmt.Sprintf("%s/pdf/orders/opord", root),
+		"FRAGO": fmt.Sprintf("%s/pdf/orders/frago", root),
 	})
 }
 
@@ -57,6 +56,22 @@ func initConfig(home string) {
 	}
 }
 
+func initRepository() error {
+	repoType := viper.GetString("repo_type")
+
+	switch repoType {
+	case "filesystem":
+		viper.Set("repo", filesystem.NewFileRepository(
+			viper.Get("src").(map[string]string),
+			viper.Get("templates").(map[string]string),
+			viper.Get("pdf").(map[string]string),
+		))
+		return nil
+	default:
+		return errors.Errorf("unsupported repository type: %s", viper.GetString("repo_type"))
+	}
+}
+
 func main() {
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
@@ -68,6 +83,10 @@ func main() {
 
 	setDefaultConfig(home)
 	initConfig(home)
+	err = initRepository()
+	if err != nil {
+		log.Fatal().Stack().Err(err).Msg("Failed to initialize repository.")
+	}
 
 	cmd.Execute()
 }

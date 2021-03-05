@@ -1,16 +1,19 @@
 package document
 
+import "strings"
+
 type OpordHeader struct {
-	MemoHeader
-	MissionNumber string `json:"mission_number" yaml:"mission_number"`
-	TimeZone string `json:"timezone" yaml:"timezone"`
-	IncidentCommander string `json:"ic" yaml:"ic"`
+	MemoHeader        `yaml:",inline"`
+	MissionNumber     string   `json:"mission_number" yaml:"mission_number"`
+	TimeZone          string   `json:"timezone" yaml:"timezone"`
+	IncidentCommander string   `json:"ic" yaml:"ic"`
+	References        []string `json:"references" yaml:"references"`
 }
 
 func (oh OpordHeader) HeaderFieldMap() map[string]interface{} {
 	fields := oh.MemoHeader.HeaderFieldMap()
 
-	fields["MISSION_NUMBER"] = oh.MissionNumber
+	fields["MISSION_NUMBER"] = strings.ReplaceAll(oh.MissionNumber, "-", "--")
 	fields["TIMEZONE"] = oh.TimeZone
 	fields["INCIDENT_COMMANDER"] = oh.IncidentCommander
 
@@ -18,15 +21,15 @@ func (oh OpordHeader) HeaderFieldMap() map[string]interface{} {
 }
 
 type Opord struct {
-	header OpordHeader
-	body string
+	header    OpordHeader
+	body      string
 	signature MemoSignature
 }
 
 func NewOpord(header OpordHeader, body string, signature MemoSignature) Opord {
-	return Opord {
-		header: header,
-		body: body,
+	return Opord{
+		header:    header,
+		body:      body,
 		signature: signature,
 	}
 }

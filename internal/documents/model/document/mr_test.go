@@ -25,19 +25,19 @@ func TestMrHeader_HeaderFieldMap_NonStandardsMrDoesNotHaveStatusFields(t *testin
 
 	input := MrHeader{
 		MemoHeader: MemoHeader{
-			Logo: "logo",
+			Logo:    "logo",
 			Address: "address",
-			Tlp: inputTlp,
+			Tlp:     inputTlp,
 			ControlNumber: documents.ControlNumber{
-				Class: documents.MR,
-				Year: 2021,
+				Class:        documents.MR,
+				Year:         2021,
 				MainSequence: 1,
 			},
-			Date: &inputDate,
+			Date:        &inputDate,
 			Attachments: nil,
-			Cc: nil,
+			Cc:          nil,
 		},
-		Track: ADVISORY,
+		Track:   ADVISORY,
 		Subject: "subject",
 		StatusHistory: MrStatusHistory{
 			Registered: MrStatus{
@@ -64,19 +64,19 @@ func TestMrHeader_HeaderFieldMap_StandardsMrHasAllFields(t *testing.T) {
 
 	input := MrHeader{
 		MemoHeader: MemoHeader{
-			Logo: "logo",
+			Logo:    "logo",
 			Address: "address",
-			Tlp: inputTlp,
+			Tlp:     inputTlp,
 			ControlNumber: documents.ControlNumber{
-				Class: documents.MR,
-				Year: 2021,
+				Class:        documents.MR,
+				Year:         2021,
 				MainSequence: 1,
 			},
-			Date: &inputDate,
+			Date:        &inputDate,
 			Attachments: nil,
-			Cc: nil,
+			Cc:          nil,
 		},
-		Track: STANDARDS,
+		Track:   STANDARDS,
 		Subject: "subject",
 		StatusHistory: MrStatusHistory{
 			Registered: MrStatus{
