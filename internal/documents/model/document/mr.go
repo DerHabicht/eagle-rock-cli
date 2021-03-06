@@ -16,6 +16,7 @@ type MrStatusHistory struct {
 
 type MrHeader struct {
 	MemoHeader    `yaml:",inline"`
+	From          string          `json:"from" yaml:"from"`
 	Track         MrTrack         `json:"track" yaml:"track"`
 	Subject       string          `json:"subject" yaml:"subject"`
 	StatusHistory MrStatusHistory `json:"status_history" yaml:"status_history"`
@@ -23,7 +24,8 @@ type MrHeader struct {
 
 func (mh MrHeader) HeaderFieldMap() map[string]interface{} {
 	fields := mh.MemoHeader.HeaderFieldMap()
-	fields["TRACK"] = mh.Track.String()
+	fields["FROM"] = mh.From
+	fields["TRACK"] = mh.Track.String() + " TRACK"
 	fields["SUBJECT"] = mh.Subject
 
 	if mh.Track == STANDARDS {

@@ -16,6 +16,10 @@ func ParseDate(s string) (Date, error) {
 	return Date{t}, err
 }
 
+func (d Date) FormatFormal() string {
+	return d.Format("02 January 2006")
+}
+
 func (d Date) String() string {
 	return d.Format("2006-01-02")
 }

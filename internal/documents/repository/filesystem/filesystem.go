@@ -1,13 +1,18 @@
 package filesystem
 
 import (
+	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/artifact"
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/document"
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/template"
 	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -30,7 +35,12 @@ func (fr FileRepository) NewDocument(doc document.IDocument) error {
 }
 
 func (fr FileRepository) LoadDocument(controlNumber documents.ControlNumber) (document.IDocument, error) {
-	filename := fr.sourceDirectories[controlNumber.Class.String()] + "/" + controlNumber.String() + ".md"
+	filename := filepath.Join(
+		fr.sourceDirectories[strings.ToLower(controlNumber.Class.String())],
+		strconv.Itoa(controlNumber.Year),
+		controlNumber.String() + ".md",
+	)
+	log.Debug().Msgf("Attempting to load document source: %s", filename)
 
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -49,12 +59,29 @@ func (fr FileRepository) LoadDocument(controlNumber documents.ControlNumber) (do
 	}
 }
 
-func (fr FileRepository) SaveCompiledDocument(controlNumber documents.ControlNumber, artifact []byte) error {
-	return errors.New("SaveDocument() not implemented")
+func (fr FileRepository) SaveCompiledDocument(controlNumber documents.ControlNumber, doc artifact.BuildArtifact) (string, error) {
+	path := filepath.Join(
+		fr.outputDirectories[strings.ToLower(controlNumber.Class.String())],
+		strconv.Itoa(controlNumber.Year),
+	)
+	err := os.MkdirAll(path, 0755)
+	if err != nil {
+		return "", errors.WithMessage(err, "failed to create output directory")
+	}
+	// TODO: Make this more generic
+	filename := strings.ToLower(controlNumber.String() + "." + doc.Type())
+
+	err = ioutil.WriteFile(filepath.Join(path, filename), doc.Artifact(), 0644)
+	if err != nil {
+		return "", errors.WithMessagef(err, "failed to write %s", controlNumber)
+	}
+
+	return filename, nil
 }
 
 func (fr FileRepository) LoadTemplate(name string, template template.ITemplate) error {
-	filename := fr.templateDirectories[template.Type()] + "/" + name + ".template"
+	filename := filepath.Join(fr.templateDirectories[template.Type()], name + ".template")
+	log.Debug().Msgf("Attempting to load template file: %s", filename)
 
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {

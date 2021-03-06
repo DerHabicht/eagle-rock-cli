@@ -1,6 +1,10 @@
 package document
 
-import "github.com/derhabicht/eagle-rock-cli/pkg/documents"
+import (
+	"fmt"
+	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
+	"strings"
+)
 
 type IHeader interface {
 	HeaderFieldMap() map[string]interface{}
@@ -16,8 +20,13 @@ type IDocument interface {
 	Signature() ISignature
 }
 
+type HeaderLogo struct {
+	Image string `json:"image" yaml:"image"`
+	Scale float64 `json:"scale" yaml:"scale"`
+}
+
 type MemoHeader struct {
-	Logo          string                  `json:"logo" yaml:"logo"`
+	Logo          HeaderLogo              `json:"logo" yaml:"logo"`
 	Address       string                  `json:"address" yaml:"address"`
 	Tlp           documents.Tlp           `json:"tlp" yaml:"tlp"`
 	ControlNumber documents.ControlNumber `json:"control_number" yaml:"control_number"`
@@ -27,12 +36,15 @@ type MemoHeader struct {
 }
 
 func (mh MemoHeader) HeaderFieldMap() map[string]interface{} {
+	// TODO: Find a more generic way to preserve linebreaks on multi-line strings
+	address := strings.Join(strings.Split(mh.Address, "\n"), ` \\ `)
 	return map[string]interface{}{
-		"LOGO":           mh.Logo,
-		"ADDRESS":        mh.Address,
-		"TLP":            mh.Tlp.String(),
+		"LOGO_IMAGE":     mh.Logo.Image,
+		"LOGO_SCALE":     fmt.Sprintf("%f", mh.Logo.Scale),
+		"ADDRESS":        address,
+		"TLP":            mh.Tlp,
 		"CONTROL_NUMBER": mh.ControlNumber.String(),
-		"DATE":           mh.Date.String(),
+		"DATE":           mh.Date.FormatFormal(),
 		"ATTACHMENTS":    mh.Attachments,
 		"CC":             mh.Cc,
 	}

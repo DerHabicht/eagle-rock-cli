@@ -2,7 +2,9 @@ package template
 
 import (
 	"fmt"
+	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 	"strings"
 )
 
@@ -25,16 +27,26 @@ func (lt LatexTemplate) Inject(values map[string]interface{}) (string, error) {
 
 	injected := lt.template
 	for k, v := range values {
-		s, ok := v.(string)
-		if ok {
+		if s, ok := v.(string); ok {
 			injected = strings.ReplaceAll(injected, fmt.Sprintf(lt.keyFormat, k), s)
-		} else {
-			l, ok := v.([]string)
-			if ok {
-				injected = strings.ReplaceAll(injected, fmt.Sprintf(lt.keyFormat, k), buildLatexList(k, l))
-			} else {
-				return "", errors.Errorf("%s: %v is neither a string nor a slice of strings", k, v)
+		} else if l, ok := v.([]string); ok {
+			injected = strings.ReplaceAll(injected, fmt.Sprintf(lt.keyFormat, k), buildLatexList(k, l))
+		} else if t, ok := v.(documents.Tlp); ok {
+			injected = strings.ReplaceAll(
+				injected,
+				fmt.Sprintf(lt.keyFormat, "TLP"),
+				strings.ToLower(t.LevelString()[4:]),
+			)
+			caveats := t.CaveatsCsv()
+			if caveats != "" {
+				injected = strings.ReplaceAll(
+					injected,
+					fmt.Sprintf(lt.keyFormat, "CAVEATS"),
+					fmt.Sprintf(",compartments={%s}", t.CaveatsCsv()),
+				)
 			}
+		} else {
+			log.Warn().Msgf("%s: %v is neither a string nor a slice of strings, it will be ignored", k, v)
 		}
 	}
 
@@ -42,7 +54,7 @@ func (lt LatexTemplate) Inject(values map[string]interface{}) (string, error) {
 }
 
 func (lt LatexTemplate) Type() string {
-	return "LATEX"
+	return "latex"
 }
 
 func buildLatexList(envName string, items []string) string {

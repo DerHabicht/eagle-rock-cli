@@ -9,7 +9,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "documents",
+	Use:   "er",
 	Short: "CLI tool to manage memoranda for record",
 	Long: `CLI tool for managing memoranda for record.
 `,

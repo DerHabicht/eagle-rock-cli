@@ -69,6 +69,14 @@ func ParseTlp(s string) (Tlp, error) {
 	return Tlp{level: level, caveats: caveats}, nil
 }
 
+func (t Tlp) LevelString() string {
+	return t.level.String()
+}
+
+func (t Tlp) CaveatsCsv() string {
+	return strings.Join(t.caveats, ",")
+}
+
 func (t Tlp) String() string {
 	if t.caveats != nil {
 		return t.level.String() + "//" + strings.Join(t.caveats, "/")

@@ -10,27 +10,41 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
+const BaseVersion = "0.1.0-develop"
+var BuildTime string
+var GitRevision string
+var GitBranch string
+
 func setDefaultConfig(home string) {
-	root := fmt.Sprintf("%s/Documents/Org/Policy", home)
+	root := filepath.Join(home, "Documents/Org/Policy")
 	viper.SetDefault("repo_type", "filesystem")
 	viper.SetDefault("src", map[string]string{
-		"MR":    fmt.Sprintf("%s/src/memos/mr", root),
-		"WARNO": fmt.Sprintf("%s/src/orders/warno", root),
-		"OPORD": fmt.Sprintf("%s/src/orders/opord", root),
-		"FRAGO": fmt.Sprintf("%s/src/orders/frago", root),
+		"MR":    filepath.Join(root, "src/memos/mrs"),
+		"WARNO": filepath.Join(root, "src/orders/warnos"),
+		"OPORD": filepath.Join(root, "src/orders/opords"),
+		"FRAGO": filepath.Join(root, "src/orders/fragos"),
 	})
 	viper.SetDefault("templates", map[string]string{
-		"LATEX": fmt.Sprintf("%s/templates/latex", root),
+		"LATEX": filepath.Join(root, "src/templates/latex"),
 	})
 	viper.SetDefault("pdf", map[string]string{
-		"MR":    fmt.Sprintf("%s/pdf/memos/mr", root),
-		"WARNO": fmt.Sprintf("%s/pdf/orders/warno", root),
-		"OPORD": fmt.Sprintf("%s/pdf/orders/opord", root),
-		"FRAGO": fmt.Sprintf("%s/pdf/orders/frago", root),
+		"MR":    filepath.Join(root, "pdf/memos/mrs"),
+		"WARNO": filepath.Join(root, "pdf/orders/warnos"),
+		"OPORD": filepath.Join(root, "pdf/orders/opords"),
+		"FRAGO": filepath.Join(root, "pdf/orders/fragos"),
 	})
+	viper.SetDefault(
+		"texinputs",
+		fmt.Sprintf(
+			"%s:%s",
+			filepath.Join(root, "src/assets"),
+			filepath.Join(root, "src/assets/latex"),
+		),
+	)
 }
 
 func initConfig(home string) {
@@ -62,9 +76,9 @@ func initRepository() error {
 	switch repoType {
 	case "filesystem":
 		viper.Set("repo", filesystem.NewFileRepository(
-			viper.Get("src").(map[string]string),
-			viper.Get("templates").(map[string]string),
-			viper.Get("pdf").(map[string]string),
+			viper.GetStringMapString("src"),
+			viper.GetStringMapString("templates"),
+			viper.GetStringMapString("pdf"),
 		))
 		return nil
 	default:
@@ -73,7 +87,17 @@ func initRepository() error {
 }
 
 func main() {
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	version := fmt.Sprintf(
+		"%s+%s.%s.%s",
+		BaseVersion,
+		GitBranch,
+		GitRevision,
+		BuildTime,
+	)
+	viper.Set("VERSION", version)
+
+	//zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
 	home, err := homedir.Dir()
