@@ -6,7 +6,7 @@ import (
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/preprocessor"
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/template"
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/repository"
-	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
+	"github.com/derhabicht/eagle-rock-lib/lib"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"strings"
@@ -28,7 +28,7 @@ func NewBuilder(repo repository.IRepository, pre preprocessor.IPreprocessor, tem
 	}
 }
 
-func (b Builder) Build(controlNumber documents.ControlNumber) error {
+func (b Builder) Build(controlNumber lib.ControlNumber) error {
 	log.Info().Msgf("Loading %s build template...", controlNumber.Class.String())
 	templateName := strings.ToLower(controlNumber.Class.String())
 	err := b.repository.LoadTemplate(templateName, b.template)

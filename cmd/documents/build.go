@@ -6,7 +6,7 @@ import (
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/template"
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/repository/filesystem"
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/services"
-	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
+	"github.com/derhabicht/eagle-rock-lib/lib"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -16,10 +16,10 @@ var buildCmd = &cobra.Command{
 	Use:   "build",
 	Short: "Build document specified by ",
 	Long:  ``,
-	// TODO: Support building a list of documents
+	// TODO: Support building a list of lib
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		cn, err := documents.ParseControlNumber(args[0])
+		cn, err := lib.ParseControlNumber(args[0])
 		if err != nil {
 			log.Fatal().Stack().Err(err).Msgf("%s is not a valid control number", args[0])
 		}

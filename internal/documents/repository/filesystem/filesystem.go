@@ -4,7 +4,7 @@ import (
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/artifact"
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/document"
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/template"
-	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
+	"github.com/derhabicht/eagle-rock-lib/lib"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v2"
@@ -34,11 +34,11 @@ func (fr FileRepository) NewDocument(doc document.IDocument) error {
 	return errors.New("NewDocument() not implemented")
 }
 
-func (fr FileRepository) LoadDocument(controlNumber documents.ControlNumber) (document.IDocument, error) {
+func (fr FileRepository) LoadDocument(controlNumber lib.ControlNumber) (document.IDocument, error) {
 	filename := filepath.Join(
 		fr.sourceDirectories[strings.ToLower(controlNumber.Class.String())],
 		strconv.Itoa(controlNumber.Year),
-		controlNumber.String() + ".md",
+		strings.ToLower(controlNumber.String()) + ".md",
 	)
 	log.Debug().Msgf("Attempting to load document source: %s", filename)
 
@@ -48,18 +48,18 @@ func (fr FileRepository) LoadDocument(controlNumber documents.ControlNumber) (do
 	}
 
 	switch controlNumber.Class {
-	case documents.MR:
-		return memoParser(documents.MR, content)
-	case documents.OPORD, documents.FRAGO:
-		return memoParser(documents.OPORD, content)
-	case documents.WARNO:
+	case lib.MR:
+		return memoParser(lib.MR, content)
+	case lib.OPORD, lib.FRAGO:
+		return memoParser(lib.OPORD, content)
+	case lib.WARNO:
 		return warnoParser(content)
 	default:
 		return nil, errors.Errorf("unsupported document type: %s", controlNumber.Class.String())
 	}
 }
 
-func (fr FileRepository) SaveCompiledDocument(controlNumber documents.ControlNumber, doc artifact.BuildArtifact) (string, error) {
+func (fr FileRepository) SaveCompiledDocument(controlNumber lib.ControlNumber, doc artifact.BuildArtifact) (string, error) {
 	path := filepath.Join(
 		fr.outputDirectories[strings.ToLower(controlNumber.Class.String())],
 		strconv.Itoa(controlNumber.Year),
@@ -93,7 +93,7 @@ func (fr FileRepository) LoadTemplate(name string, template template.ITemplate) 
 	return nil
 }
 
-func memoParser(class documents.ControlNumberClass, content []byte) (document.IDocument, error) {
+func memoParser(class lib.ControlNumberClass, content []byte) (document.IDocument, error) {
 	signature := document.MemoSignature{}
 
 	re, err := regexp.Compile(`(?ms)^---(.+?)\.\.\.`)
@@ -110,14 +110,14 @@ func memoParser(class documents.ControlNumberClass, content []byte) (document.ID
 	}
 	body := re.ReplaceAll(content, []byte{})
 	switch class {
-	case documents.MR:
+	case lib.MR:
 		header := document.MrHeader{}
 		err = yaml.Unmarshal(headerContent, &header)
 		if err != nil {
 			return nil, errors.WithMessage(err, "failed to parse memo header")
 		}
 		return document.NewMr(header, string(body), signature), nil
-	case documents.OPORD:
+	case lib.OPORD:
 		header := document.OpordHeader{}
 		err = yaml.Unmarshal(headerContent, &header)
 		if err != nil {
@@ -125,7 +125,7 @@ func memoParser(class documents.ControlNumberClass, content []byte) (document.ID
 		}
 		return document.NewOpord(header, string(body), signature), nil
 	default:
-		return nil, errors.Errorf("memoParser() does not support parsing of %s documents", class.String())
+		return nil, errors.Errorf("memoParser() does not support parsing of %s lib", class.String())
 	}
 }
 

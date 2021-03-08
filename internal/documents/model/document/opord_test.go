@@ -1,7 +1,7 @@
 package document
 
 import (
-	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
+	"github.com/derhabicht/eagle-rock-lib/lib"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -17,19 +17,22 @@ func TestOpord_IsIDocument(t *testing.T) {
 }
 
 func TestOpordHeader_HeaderFieldMap_HasAllFields(t *testing.T) {
-	inputTlp, err := documents.ParseTlp("TLP:RED//FOO/BAR")
+	inputTlp, err := lib.ParseTlp("TLP:RED//FOO/BAR")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
-	inputDate, err := documents.ParseDate("2021-09-27")
+	inputDate, err := lib.ParseDate("2021-09-27")
 
 	input := OpordHeader{
 		MemoHeader: MemoHeader{
-			Logo:    "logo",
+			Logo:    HeaderLogo{
+				Image: "logo",
+				Scale: 1.0,
+			},
 			Address: "address",
 			Tlp:     inputTlp,
-			ControlNumber: documents.ControlNumber{
-				Class:        documents.MR,
+			ControlNumber: lib.ControlNumber{
+				Class:        lib.MR,
 				Year:         2021,
 				MainSequence: 1,
 			},

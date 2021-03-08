@@ -2,7 +2,7 @@ package document
 
 import (
 	"fmt"
-	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
+	"github.com/derhabicht/eagle-rock-lib/lib"
 	"strings"
 )
 
@@ -26,13 +26,13 @@ type HeaderLogo struct {
 }
 
 type MemoHeader struct {
-	Logo          HeaderLogo              `json:"logo" yaml:"logo"`
-	Address       string                  `json:"address" yaml:"address"`
-	Tlp           documents.Tlp           `json:"tlp" yaml:"tlp"`
-	ControlNumber documents.ControlNumber `json:"control_number" yaml:"control_number"`
-	Date          *documents.Date         `json:"date" yaml:"date"`
-	Attachments   []string                `json:"attachments,omitempty" yaml:"attachments,omitempty"`
-	Cc            []string                `json:"cc,omitempty" yaml:"cc,omitempty"`
+	Logo          HeaderLogo        `json:"logo" yaml:"logo"`
+	Address       string            `json:"address" yaml:"address"`
+	Tlp           lib.Tlp           `json:"tlp" yaml:"tlp"`
+	ControlNumber lib.ControlNumber `json:"control_number" yaml:"control_number"`
+	Date          *lib.Date         `json:"date" yaml:"date"`
+	Attachments   []string          `json:"attachments,omitempty" yaml:"attachments,omitempty"`
+	Cc            []string          `json:"cc,omitempty" yaml:"cc,omitempty"`
 }
 
 func (mh MemoHeader) HeaderFieldMap() map[string]interface{} {
@@ -43,7 +43,7 @@ func (mh MemoHeader) HeaderFieldMap() map[string]interface{} {
 		"LOGO_SCALE":     fmt.Sprintf("%f", mh.Logo.Scale),
 		"ADDRESS":        address,
 		"TLP":            mh.Tlp,
-		"CONTROL_NUMBER": mh.ControlNumber.String(),
+		"CONTROL_NUMBER": strings.ReplaceAll(mh.ControlNumber.String(), "-", "--"),
 		"DATE":           mh.Date.FormatFormal(),
 		"ATTACHMENTS":    mh.Attachments,
 		"CC":             mh.Cc,

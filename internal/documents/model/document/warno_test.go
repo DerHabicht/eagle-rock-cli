@@ -1,7 +1,7 @@
 package document
 
 import (
-	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
+	"github.com/derhabicht/eagle-rock-lib/lib"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -27,11 +27,11 @@ func TestParseWarnoHeader_ValidHeader(t *testing.T) {
 WARNO-21-001 ACES-20-006-S01
 TZ UTC-0700 IC ROBERT HAWK`
 
-	expectedTlp, err := documents.ParseTlp("TLP:RED//FOO/BAR")
+	expectedTlp, err := lib.ParseTlp("TLP:RED//FOO/BAR")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
-	expectedDtg, err := documents.ParseDtg("20210209T2130Z")
+	expectedDtg, err := lib.ParseDtg("20210209T2130Z")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
@@ -39,8 +39,8 @@ TZ UTC-0700 IC ROBERT HAWK`
 		Tlp:      expectedTlp,
 		DateTime: expectedDtg,
 		Issuer:   "THUS//HQ",
-		ControlNumber: documents.ControlNumber{
-			Class:        documents.WARNO,
+		ControlNumber: lib.ControlNumber{
+			Class:        lib.WARNO,
 			Year:         2021,
 			MainSequence: 1,
 		},
@@ -56,11 +56,11 @@ TZ UTC-0700 IC ROBERT HAWK`
 }
 
 func TestWarnoHeader_String(t *testing.T) {
-	inputTlp, err := documents.ParseTlp("TLP:RED//FOO/BAR")
+	inputTlp, err := lib.ParseTlp("TLP:RED//FOO/BAR")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
-	inputDtg, err := documents.ParseDtg("20210209T2130Z")
+	inputDtg, err := lib.ParseDtg("20210209T2130Z")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
@@ -68,8 +68,8 @@ func TestWarnoHeader_String(t *testing.T) {
 		Tlp:      inputTlp,
 		DateTime: inputDtg,
 		Issuer:   "THUS//HQ",
-		ControlNumber: documents.ControlNumber{
-			Class:        documents.WARNO,
+		ControlNumber: lib.ControlNumber{
+			Class:        lib.WARNO,
 			Year:         2021,
 			MainSequence: 1,
 		},

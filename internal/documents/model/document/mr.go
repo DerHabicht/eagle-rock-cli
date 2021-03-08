@@ -1,10 +1,10 @@
 package document
 
-import "github.com/derhabicht/eagle-rock-cli/pkg/documents"
+import "github.com/derhabicht/eagle-rock-lib/lib"
 
 type MrStatus struct {
-	Date  documents.Date `json:"date" yaml:"date"`
-	Notes string         `json:"notes" yaml:"notes"`
+	Date  lib.Date `json:"date" yaml:"date"`
+	Notes string   `json:"notes" yaml:"notes"`
 }
 
 type MrStatusHistory struct {

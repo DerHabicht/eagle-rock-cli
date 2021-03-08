@@ -57,7 +57,7 @@ func initConfig(home string) {
 
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(fmt.Sprintf("%s/.config/eagle-rock/", home))
-	viper.SetConfigName("documents")
+	viper.SetConfigName("lib")
 	err = viper.SafeWriteConfig()
 	if err != nil {
 		if !strings.Contains(err.Error(), "Already Exists") {
@@ -96,8 +96,8 @@ func main() {
 	)
 	viper.Set("VERSION", version)
 
-	//zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	//zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
 	home, err := homedir.Dir()

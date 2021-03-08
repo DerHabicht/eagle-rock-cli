@@ -6,7 +6,7 @@ import (
 
 var DocsCmd = &cobra.Command{
 	Use:   "docs",
-	Short: "Perform an operation on one or more policy documents",
+	Short: "Perform an operation on one or more policy lib",
 	Long:  ``,
 }
 

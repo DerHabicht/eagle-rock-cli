@@ -2,7 +2,7 @@ package template
 
 import (
 	"fmt"
-	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
+	"github.com/derhabicht/eagle-rock-lib/lib"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"strings"
@@ -31,7 +31,7 @@ func (lt LatexTemplate) Inject(values map[string]interface{}) (string, error) {
 			injected = strings.ReplaceAll(injected, fmt.Sprintf(lt.keyFormat, k), s)
 		} else if l, ok := v.([]string); ok {
 			injected = strings.ReplaceAll(injected, fmt.Sprintf(lt.keyFormat, k), buildLatexList(k, l))
-		} else if t, ok := v.(documents.Tlp); ok {
+		} else if t, ok := v.(lib.Tlp); ok {
 			injected = strings.ReplaceAll(
 				injected,
 				fmt.Sprintf(lt.keyFormat, "TLP"),

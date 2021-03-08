@@ -3,7 +3,7 @@ package filesystem
 import (
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/document"
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/repository"
-	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
+	"github.com/derhabicht/eagle-rock-lib/lib"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -17,7 +17,9 @@ func TestFileRepository_IsIRepository(t *testing.T) {
 func TestMemoParser_ParseMr(t *testing.T) {
 	input := `
 ---
-logo:           logos/barnards-star/barnards_star-500x500.png
+logo:           
+    image: logos/barnards-star/barnards_star-500x500.png
+    scale: 0.4
 address: |-     
     HEADQUARTERS, CRAZYLAND
     1600 Pennsylvania Ave
@@ -61,23 +63,26 @@ name:      Tweedle Dee
 signature: signatures/tweedle_dee.jpg
 ...
 `
-	expectedTlp, err := documents.ParseTlp("TLP:GREEN")
+	expectedTlp, err := lib.ParseTlp("TLP:GREEN")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
-	expectedDate, err := documents.ParseDate("2020-08-18")
+	expectedDate, err := lib.ParseDate("2020-08-18")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
 	expectedHeader := document.MrHeader{
 		MemoHeader: document.MemoHeader{
-			Logo: "logos/barnards-star/barnards_star-500x500.png",
+			Logo: document.HeaderLogo{
+				Image: "logos/barnards-star/barnards_star-500x500.png",
+				Scale: 0.4,
+			},
 			Address: `HEADQUARTERS, CRAZYLAND
 1600 Pennsylvania Ave
 Washington, DC 20003`,
 			Tlp: expectedTlp,
-			ControlNumber: documents.ControlNumber{
-				Class:        documents.MR,
+			ControlNumber: lib.ControlNumber{
+				Class:        lib.MR,
 				Year:         2020,
 				MainSequence: 1,
 			},
@@ -126,7 +131,7 @@ Test paragraph 4. Oh look! A Table!
 		Signature: "signatures/tweedle_dee.jpg",
 	}
 
-	result, err := memoParser(documents.MR, []byte(input))
+	result, err := memoParser(lib.MR, []byte(input))
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
@@ -156,7 +161,9 @@ Test paragraph 4. Oh look! A Table!
 func TestMemoParser_ParseOpord(t *testing.T) {
 	input := `
 ---
-logo: logos/barnards-star/barnards_star-500x500.png
+logo: 
+    image: logos/barnards-star/barnards_star-500x500.png
+    scale: 0.4
 address: |-     
     HEADQUARTERS, CRAZYLAND
     1600 Pennsylvania Ave
@@ -196,23 +203,26 @@ name:      Tweedle Dee
 signature: signatures/tweedle_dee.jpg
 ...
 `
-	expectedTlp, err := documents.ParseTlp("TLP:GREEN")
+	expectedTlp, err := lib.ParseTlp("TLP:GREEN")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
-	expectedDate, err := documents.ParseDate("2020-08-18")
+	expectedDate, err := lib.ParseDate("2020-08-18")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
 	expectedHeader := document.OpordHeader{
 		MemoHeader: document.MemoHeader{
-			Logo: "logos/barnards-star/barnards_star-500x500.png",
+			Logo: document.HeaderLogo{
+				Image: "logos/barnards-star/barnards_star-500x500.png",
+				Scale: 0.4,
+			},
 			Address: `HEADQUARTERS, CRAZYLAND
 1600 Pennsylvania Ave
 Washington, DC 20003`,
 			Tlp: expectedTlp,
-			ControlNumber: documents.ControlNumber{
-				Class:        documents.OPORD,
+			ControlNumber: lib.ControlNumber{
+				Class:        lib.OPORD,
 				Year:         2020,
 				MainSequence: 1,
 			},
@@ -254,7 +264,7 @@ Test paragraph 4. Oh look! A Table!
 		Signature: "signatures/tweedle_dee.jpg",
 	}
 
-	result, err := memoParser(documents.OPORD, []byte(input))
+	result, err := memoParser(lib.OPORD, []byte(input))
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
@@ -333,11 +343,11 @@ SIT AMET ACCUMSAN VELIT. NAM TINCIDUNT LECTUS VARIUS PURUS DIGNISSIM EGESTAS.
 // TWEEDLE DEE //
 `
 
-	expeectedTlp, err := documents.ParseTlp("TLP:GREEN")
+	expeectedTlp, err := lib.ParseTlp("TLP:GREEN")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
-	expectedDtg, err := documents.ParseShortDtg("20200209T2130Z")
+	expectedDtg, err := lib.ParseShortDtg("20200209T2130Z")
 	if err != nil {
 		assert.FailNow(t, "%s", err)
 	}
@@ -345,8 +355,8 @@ SIT AMET ACCUMSAN VELIT. NAM TINCIDUNT LECTUS VARIUS PURUS DIGNISSIM EGESTAS.
 		Tlp:      expeectedTlp,
 		DateTime: expectedDtg,
 		Issuer:   "HQ, CRAZYLAND",
-		ControlNumber: documents.ControlNumber{
-			Class:        documents.WARNO,
+		ControlNumber: lib.ControlNumber{
+			Class:        lib.WARNO,
 			Year:         2020,
 			MainSequence: 1,
 		},

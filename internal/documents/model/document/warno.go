@@ -2,17 +2,17 @@ package document
 
 import (
 	"fmt"
-	"github.com/derhabicht/eagle-rock-cli/pkg/documents"
+	lib "github.com/derhabicht/eagle-rock-lib/lib"
 	"github.com/pkg/errors"
 	"regexp"
 	"strings"
 )
 
 type WarnoHeader struct {
-	Tlp               documents.Tlp
-	DateTime          documents.Dtg
+	Tlp               lib.Tlp
+	DateTime          lib.Dtg
 	Issuer            string
-	ControlNumber     documents.ControlNumber
+	ControlNumber     lib.ControlNumber
 	MissionNumber     string
 	TimeZone          string
 	IncidentCommander string
@@ -23,15 +23,15 @@ func ParseWarnoHeader(s string) (WarnoHeader, error) {
 
 	m := re.FindStringSubmatch(s)
 
-	tlp, err := documents.ParseTlp(m[1])
+	tlp, err := lib.ParseTlp(m[1])
 	if err != nil {
 		return WarnoHeader{}, errors.WithMessage(err, "failed to parse WARNO header")
 	}
-	dtg, err := documents.ParseDtg(m[2])
+	dtg, err := lib.ParseDtg(m[2])
 	if err != nil {
 		return WarnoHeader{}, errors.WithMessage(err, "failed to parse WARNO header")
 	}
-	controlNumber, err := documents.ParseControlNumber(m[4])
+	controlNumber, err := lib.ParseControlNumber(m[4])
 	if err != nil {
 		return WarnoHeader{}, errors.WithMessage(err, "failed to parse WARNO header")
 	}
