@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
-- Building Memoranda for Record
-- Printing an index of unpublished MRs
-- Building WARNOs for printing
 
 ### Changed
 
@@ -20,3 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
+
+## 0.1.0
+
+### Added
+- Build Memoranda for Record PDF
+- Build Warn Order PDFs
+- Build Operation Order PDFs
+- Build Fragmentary Operation Order PDFs
