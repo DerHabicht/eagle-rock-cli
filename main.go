@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-const BaseVersion = "0.1.0-develop"
+const BaseVersion = "0.1.0"
 var BuildTime string
 var GitRevision string
 var GitBranch string
