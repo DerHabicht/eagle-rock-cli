@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v2"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -17,12 +18,30 @@ import (
 )
 
 type FileRepository struct {
+	// Keys that should be present present in source directories:
+	// - mr
+	// - warno
+	// - opord
+	// - frago
 	sourceDirectories   map[string]string
+
+	// Keys that should be present present in template directories:
+	// - latex
 	templateDirectories map[string]string
+
+	// Keys that should be present present in output directories:
+	// - mr
+	// - warno
+	// - opord
+	// - frago
 	outputDirectories   map[string]string
 }
 
-func NewFileRepository(srcDirs map[string]string, templDirs map[string]string, outDirs map[string]string) FileRepository {
+func NewFileRepository(
+	srcDirs map[string]string,
+	templDirs map[string]string,
+	outDirs map[string]string,
+) FileRepository {
 	return FileRepository{
 		sourceDirectories:   srcDirs,
 		templateDirectories: templDirs,
@@ -34,11 +53,33 @@ func (fr FileRepository) NewDocument(doc document.IDocument) error {
 	return errors.New("NewDocument() not implemented")
 }
 
+// TODO: Make this more generic
+func (fr FileRepository) ListDocuments() (document.IDocumentIndex, error) {
+	mr, err := makeDocumentIndexMap(fr.sourceDirectories["mr"])
+	if err != nil {
+		return nil, errors.WithMessage(err, "failed to generate document index")
+	}
+	warno, err := makeDocumentIndexMap(fr.sourceDirectories["warno"])
+	if err != nil {
+		return nil, errors.WithMessage(err, "failed to generate document index")
+	}
+	opord, err := makeDocumentIndexMap(fr.sourceDirectories["opord"])
+	if err != nil {
+		return nil, errors.WithMessage(err, "failed to generate document index")
+	}
+	frago, err := makeDocumentIndexMap(fr.sourceDirectories["frago"])
+	if err != nil {
+		return nil, errors.WithMessage(err, "failed to generate document index")
+	}
+
+	return document.NewPolicyDocumentIndex(mr, warno, opord, frago), nil
+}
+
 func (fr FileRepository) LoadDocument(controlNumber lib.ControlNumber) (document.IDocument, error) {
 	filename := filepath.Join(
 		fr.sourceDirectories[strings.ToLower(controlNumber.Class.String())],
 		strconv.Itoa(controlNumber.Year),
-		strings.ToLower(controlNumber.String()) + ".md",
+		strings.ToLower(controlNumber.String())+".md",
 	)
 	log.Debug().Msgf("Attempting to load document source: %s", filename)
 
@@ -59,7 +100,10 @@ func (fr FileRepository) LoadDocument(controlNumber lib.ControlNumber) (document
 	}
 }
 
-func (fr FileRepository) SaveCompiledDocument(controlNumber lib.ControlNumber, doc artifact.BuildArtifact) (string, error) {
+func (fr FileRepository) SaveCompiledDocument(
+	controlNumber lib.ControlNumber,
+	doc artifact.BuildArtifact,
+) (string, error) {
 	path := filepath.Join(
 		fr.outputDirectories[strings.ToLower(controlNumber.Class.String())],
 		strconv.Itoa(controlNumber.Year),
@@ -80,7 +124,7 @@ func (fr FileRepository) SaveCompiledDocument(controlNumber lib.ControlNumber, d
 }
 
 func (fr FileRepository) LoadTemplate(name string, template template.ITemplate) error {
-	filename := filepath.Join(fr.templateDirectories[template.Type()], name + ".template")
+	filename := filepath.Join(fr.templateDirectories[template.Type()], name+".template")
 	log.Debug().Msgf("Attempting to load template file: %s", filename)
 
 	content, err := ioutil.ReadFile(filename)
@@ -91,6 +135,31 @@ func (fr FileRepository) LoadTemplate(name string, template template.ITemplate) 
 	template.Init(string(content))
 
 	return nil
+}
+
+func makeDocumentIndexMap(path string) (map[int][]lib.ControlNumber, error) {
+	m := make(map[int][]lib.ControlNumber)
+	year := 0
+	err := filepath.WalkDir(path, func(p string, d fs.DirEntry, err error) error {
+		if d.IsDir() {
+			y, err := strconv.Atoi(d.Name())
+			if err == nil {
+				year = y
+				m[year] = make([]lib.ControlNumber, 0)
+			}
+		} else {
+			if year != 0 {
+				cn, err := lib.ParseControlNumber(d.Name()[:len(d.Name())-3])
+				if err == nil {
+					m[year] = append(m[year], cn)
+				}
+			}
+		}
+
+		return nil
+	})
+
+	return m, err
 }
 
 // FIXME: Handle tables in the Markdown better

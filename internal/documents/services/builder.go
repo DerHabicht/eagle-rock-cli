@@ -24,7 +24,12 @@ type Builder struct {
 	compiler     compiler.ICompiler
 }
 
-func NewBuilder(repo repository.IRepository, pre preprocessor.IPreprocessor, templ template.ITemplate, comp compiler.ICompiler) Builder {
+func NewBuilder(
+	repo repository.IRepository,
+	pre preprocessor.IPreprocessor,
+	templ template.ITemplate,
+	comp compiler.ICompiler,
+) Builder {
 	return Builder{
 		repository:   repo,
 		preprocessor: pre,
@@ -85,7 +90,6 @@ func buildContentMap(document document.IDocument) map[string]interface{} {
 	return content
 }
 
-
 func executeBuild(compiler compiler.ICompiler, cn lib.ControlNumber, src string) (artifact.BuildArtifact, error) {
 	artfct, err := compiler.Compile(src)
 	if err != nil {
@@ -98,7 +102,7 @@ func executeBuild(compiler compiler.ICompiler, cn lib.ControlNumber, src string)
 				cn.String(),
 			)
 		}
-		err2 = ioutil.WriteFile(filepath.Join(debugPath, strings.ToLower(cn.String()) + ".tex"), []byte(src), 0644)
+		err2 = ioutil.WriteFile(filepath.Join(debugPath, strings.ToLower(cn.String())+".tex"), []byte(src), 0644)
 		if err2 != nil {
 			return artifact.BuildArtifact{}, errors.WithMessagef(err, "failed to write intermediate TeX for %s", cn.String())
 		}
@@ -106,7 +110,7 @@ func executeBuild(compiler compiler.ICompiler, cn lib.ControlNumber, src string)
 		return artifact.BuildArtifact{}, errors.WithMessagef(
 			err,
 			"build failed; intermediate TeX tex written to %s",
-			filepath.Join(debugPath, strings.ToLower(cn.String() + ".tex")),
+			filepath.Join(debugPath, strings.ToLower(cn.String()+".tex")),
 		)
 	}
 

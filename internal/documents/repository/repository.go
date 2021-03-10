@@ -9,6 +9,7 @@ import (
 
 type IRepository interface {
 	NewDocument(document.IDocument) error
+	ListDocuments() (document.IDocumentIndex, error)
 	LoadDocument(lib.ControlNumber) (document.IDocument, error)
 	SaveCompiledDocument(lib.ControlNumber, artifact.BuildArtifact) (string, error)
 	LoadTemplate(string, template.ITemplate) error

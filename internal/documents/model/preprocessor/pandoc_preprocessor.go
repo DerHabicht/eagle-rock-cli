@@ -6,13 +6,13 @@ import (
 )
 
 type PandocPreprocessor struct {
-	inputType string
+	inputType  string
 	outputType string
 }
 
 func NewPandocPreprocessor(inputType string, outputType string) PandocPreprocessor {
 	return PandocPreprocessor{
-		inputType: inputType,
+		inputType:  inputType,
 		outputType: outputType,
 	}
 }

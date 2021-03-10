@@ -29,6 +29,10 @@ func (oh OpordHeader) HeaderFieldMap() map[string]interface{} {
 	return fields
 }
 
+func (oh OpordHeader) DocumentTitle() string {
+	return oh.MissionNumber
+}
+
 type Opord struct {
 	header    OpordHeader
 	body      string

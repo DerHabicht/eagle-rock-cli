@@ -3,8 +3,8 @@ package compiler
 import (
 	"github.com/derhabicht/eagle-rock-cli/internal/documents/model/artifact"
 	"github.com/pkg/errors"
-"github.com/rs/zerolog/log"
-"github.com/rwestlund/gotex"
+	"github.com/rs/zerolog/log"
+	"github.com/rwestlund/gotex"
 )
 
 type PdflatexCompiler struct {

@@ -18,7 +18,6 @@ type MrHeader struct {
 	MemoHeader    `yaml:",inline"`
 	From          string          `json:"from" yaml:"from"`
 	Track         MrTrack         `json:"track" yaml:"track"`
-	Subject       string          `json:"subject" yaml:"subject"`
 	StatusHistory MrStatusHistory `json:"status_history" yaml:"status_history"`
 }
 

@@ -63,6 +63,23 @@ func (wh WarnoHeader) String() string {
 	)
 }
 
+func (wh WarnoHeader) DocumentCN() lib.ControlNumber {
+	return wh.ControlNumber
+}
+
+func (wh WarnoHeader) DocumentDate() *lib.Date {
+	d, err := lib.ParseDate(wh.DateTime.String())
+	if err != nil {
+		panic(errors.WithStack(err))
+	}
+
+	return &d
+}
+
+func (wh WarnoHeader) DocumentTitle() string {
+	return wh.MissionNumber
+}
+
 func (wh WarnoHeader) HeaderFieldMap() map[string]interface{} {
 	return map[string]interface{}{
 		"HEADER": wh.String(),
