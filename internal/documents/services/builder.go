@@ -89,6 +89,7 @@ func buildContentMap(document document.IDocument) map[string]interface{} {
 func executeBuild(compiler compiler.ICompiler, cn lib.ControlNumber, src string) (artifact.BuildArtifact, error) {
 	artfct, err := compiler.Compile(src)
 	if err != nil {
+		// TODO: Make sure this is working as expected
 		debugPath := filepath.Join(viper.GetString("root"), "debug")
 		err2 := os.MkdirAll(debugPath, 0755)
 		if err2 != nil {

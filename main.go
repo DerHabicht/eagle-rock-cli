@@ -96,6 +96,7 @@ func main() {
 	)
 	viper.Set("VERSION", version)
 
+	// TODO: Make loglevel configurable
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	//zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})

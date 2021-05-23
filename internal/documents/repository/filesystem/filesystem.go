@@ -102,6 +102,7 @@ func memoParser(class lib.ControlNumberClass, content []byte) (document.IDocumen
 		panic(errors.New("invalid regex for parsing memos"))
 	}
 	parts := re.FindAllSubmatch(content, -1)
+	// TODO: Throw a meaningful error if header or signature is missing
 	headerContent := parts[0][1]
 	sigContent := parts[1][1]
 
