@@ -12,6 +12,7 @@ const (
 	PROGRAM
 	PROJECT
 	ADVISORY
+	RFC
 )
 
 func ParseMrTrack(s string) (MrTrack, error) {
@@ -24,6 +25,8 @@ func ParseMrTrack(s string) (MrTrack, error) {
 		return PROJECT, nil
 	case "advisory":
 		return ADVISORY, nil
+	case "rfc":
+		return RFC, nil
 	default:
 		return -1, errors.Errorf("%s is not a valid MR track", s)
 	}
@@ -39,6 +42,8 @@ func (mt MrTrack) String() string {
 		return "PROJECT"
 	case ADVISORY:
 		return "ADVISORY"
+	case RFC:
+		return "RFC"
 	default:
 		panic(errors.Errorf("%d is not a valid MR track", mt))
 	}

@@ -25,7 +25,11 @@ type MrHeader struct {
 func (mh MrHeader) HeaderFieldMap() map[string]interface{} {
 	fields := mh.MemoHeader.HeaderFieldMap()
 	fields["FROM"] = mh.From
-	fields["TRACK"] = mh.Track.String() + " TRACK"
+	if mh.Track == RFC {
+		fields["TRACK"] = "REQUEST FOR COMMENT"
+	} else {
+		fields["TRACK"] = mh.Track.String() + " TRACK"
+	}
 	fields["SUBJECT"] = mh.Subject
 
 	if mh.Track == STANDARDS {

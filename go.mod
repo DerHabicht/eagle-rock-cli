@@ -3,7 +3,7 @@ module github.com/derhabicht/eagle-rock-cli
 go 1.15
 
 require (
-	github.com/derhabicht/eagle-rock-lib v0.1.1
+	github.com/derhabicht/eagle-rock-lib v0.1.2
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.20.0
